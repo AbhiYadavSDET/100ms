@@ -26,6 +26,7 @@ public class RecordingHelper {
                 .contentType("application/json")
                 .body("{\"meeting_url\": \"" + meetingUrl + "\"}") // Updated request body
                 .post("/v2/live-streams/room/" + roomId + "/start");
+        System.out.println(" Testing");
 
         return response;
     }
