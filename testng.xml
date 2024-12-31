@@ -1,0 +1,7 @@
+<suite name="Recording API Suite">
+    <test name="Recording API Tests">
+        <classes>
+            <class name="tests.RecordingAPITests" />
+        </classes>
+    </test>
+</suite>
