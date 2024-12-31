@@ -25,7 +25,8 @@ public class RecordingHelper {
                 .header("Authorization", "Bearer " + managementToken) // Use management token
                 .contentType("application/json")
                 .body("{\"meeting_url\": \"" + meetingUrl + "\"}") // Updated request body
-                .post("/v2/live-streams/room/" + roomId + "/start").then().log().all().extract().response();;
+                .post("/v2/live-streams/room/" + roomId + "/start")
+                .then().log().all().extract().response();
 
         return response;
     }
@@ -39,8 +40,6 @@ public class RecordingHelper {
                 .body("{ \"meeting_url\": \"" + meetingUrl + "\" }") // Pass the meeting URL in the request body
                 .post("/v2/live-streams/room/" + roomId + "/stop")
                 .then().log().all().extract().response();
-                ;
-
 
         return response;
     }
