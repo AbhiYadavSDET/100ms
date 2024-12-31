@@ -29,7 +29,6 @@ public class RecordingAPITests extends BaseTest {
         Response response = recordingHelper.startRecording(roomId, meetingUrl);
 
         System.out.println("Response Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
 
         // Validate the response
         ResponseValidator.validateStatusCode(response, 200);
@@ -42,7 +41,6 @@ public class RecordingAPITests extends BaseTest {
         Response response = recordingHelper.startRecording(roomId, meetingUrl);
 
         System.out.println("Response Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
 
         // Validate the response
         ResponseValidator.validateStatusCode(response, 409);
@@ -55,7 +53,6 @@ public class RecordingAPITests extends BaseTest {
         Response response = recordingHelper.stopRecording(roomId, meetingUrl);
 
         System.out.println("Response Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
 
         // Validate the response status code
         ResponseValidator.validateStatusCode(response, 200);
@@ -76,7 +73,6 @@ public class RecordingAPITests extends BaseTest {
         Response response = recordingHelper.stopRecording(roomId,meetingUrl);
 
         System.out.println("Response Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
 
         // Validate the response
         ResponseValidator.validateStatusCode(response, 404);
