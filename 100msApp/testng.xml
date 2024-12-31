@@ -1,5 +1,11 @@
 <suite name="Recording API Suite">
     <test name="Recording API Tests">
+
+        <listeners>
+            <listener class-name="utils.ExtentReporterListener" />
+            <listener class-name="utils.AnnotationTransform"/>
+        </listeners>
+
         <classes>
             <class name="tests.RecordingAPITests" />
         </classes>
