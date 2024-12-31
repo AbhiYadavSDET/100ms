@@ -20,7 +20,7 @@ public class RecordingHelper {
         Response response = given().log().all()
                 .spec(requestSpec) // Use the shared RequestSpecification
                 .body(requestBody)
-                .post("/v2/live-streams/room/" + roomId + "/start")
+                .post("/v2/live-streams/room/" + roomId + "/start?skip_preview=true")
                 .then()
                 .log().all()
                 .extract().response();
@@ -40,7 +40,7 @@ public class RecordingHelper {
         Response response = given().log().all()
                 .spec(requestSpec) // Use the shared RequestSpecification
                 .body(requestBody)
-                .post("/v2/live-streams/room/" + roomId + "/stop")
+                .post("/v2/live-streams/room/" + roomId + "/stop?skip_preview=true")
                 .then()
                 .log().all()
                 .extract().response();
