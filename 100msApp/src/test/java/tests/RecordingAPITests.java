@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import utils.ConfigManager;
-import utils.ResponseValidator;
 import com.aventstack.extentreports.ExtentTest;
 import utils.ExtentReporter;
 
@@ -36,14 +35,17 @@ public class RecordingAPITests extends BaseTest {
 
         test.info("Response Status Code: " + response.getStatusCode());
 
-        // Validate the response
-        ResponseValidator.validateStatusCode(response, 200);
-        ResponseValidator.validateField(response, "status", "starting");
+        try {
+            if (response.statusCode() == 200) {
+                test.pass("Recording started successfully.");
+            } else {
+                test.fail("Failed to start recording. Status Code: " + response.statusCode());
+            }
+            Assert.assertEquals(response.jsonPath().getString("status"), "starting", "Recording status should be 'starting'");
 
-        if (response.statusCode() == 200) {
-            test.pass("Recording started successfully.");
-        } else {
-            test.fail("Failed to start recording. Status Code: " + response.statusCode());
+        } catch (AssertionError e) {
+            test.fail("Test failed: " + e.getMessage());
+            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
         }
     }
 
@@ -57,14 +59,19 @@ public class RecordingAPITests extends BaseTest {
 
         test.info("Response Status Code: " + response.getStatusCode());
 
-        // Validate the response
-        ResponseValidator.validateStatusCode(response, 409);
-        ResponseValidator.validateField(response, "message", "beam already started");
+        try {
+            // Validate the response
+            Assert.assertEquals(response.statusCode(), 409, "Status Code should be 409.");
+            Assert.assertEquals(response.jsonPath().getString("message"), "beam already started", "Error message should indicate beam already started.");
 
-        if (response.statusCode() == 409) {
-            test.pass("Recording start failed as expected: Beam already started.");
-        } else {
-            test.fail("Unexpected response. Status Code: " + response.statusCode());
+            if (response.statusCode() == 409) {
+                test.pass("Recording start failed as expected: Beam already started.");
+            } else {
+                test.fail("Unexpected response. Status Code: " + response.statusCode());
+            }
+        } catch (AssertionError e) {
+            test.fail("Test failed: " + e.getMessage());
+            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
         }
     }
 
@@ -78,18 +85,23 @@ public class RecordingAPITests extends BaseTest {
 
         test.info("Response Status Code: " + response.getStatusCode());
 
-        // Validate the response status code
-        ResponseValidator.validateStatusCode(response, 200);
+        try {
+            // Validate the response status code
+            Assert.assertEquals(response.statusCode(), 200, "Status Code should be 200.");
 
-        // Extract data from the response
-        String status = response.jsonPath().getString("data[0].status");
-        String meetingUrlFromResponse = response.jsonPath().getString("data[0].meeting_url");
+            // Extract data from the response
+            String status = response.jsonPath().getString("data[0].status");
+            String meetingUrlFromResponse = response.jsonPath().getString("data[0].meeting_url");
 
-        // Assertions for status and meeting URL
-        Assert.assertEquals(status, "stopping", "Recording status is not stopping.");
-        Assert.assertEquals(meetingUrlFromResponse, meetingUrl, "Meeting URL in response does not match the provided URL.");
+            // Assertions for status and meeting URL
+            Assert.assertEquals(status, "stopping", "Recording status is not stopping.");
+            Assert.assertEquals(meetingUrlFromResponse, meetingUrl, "Meeting URL in response does not match the provided URL.");
 
-        test.pass("Recording stopped successfully with status: " + status);
+            test.pass("Recording stopped successfully with status: " + status);
+        } catch (AssertionError e) {
+            test.fail("Test failed: " + e.getMessage());
+            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
+        }
     }
 
     @Test(priority = 4)
@@ -102,13 +114,18 @@ public class RecordingAPITests extends BaseTest {
 
         test.info("Response Status Code: " + response.getStatusCode());
 
-        // Validate the response
-        ResponseValidator.validateStatusCode(response, 404);
+        try {
+            // Validate the response
+            Assert.assertEquals(response.statusCode(), 404, "Status Code should be 404.");
 
-        if (response.statusCode() == 404) {
-            test.pass("Stop recording request failed as expected, no active recording found.");
-        } else {
-            test.fail("Unexpected response. Status Code: " + response.statusCode());
+            if (response.statusCode() == 404) {
+                test.pass("Stop recording request failed as expected, no active recording found.");
+            } else {
+                test.fail("Unexpected response. Status Code: " + response.statusCode());
+            }
+        } catch (AssertionError e) {
+            test.fail("Test failed: " + e.getMessage());
+            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
         }
     }
 }
