@@ -1,9 +1,9 @@
 package models;
 
-public class StartRecordingRequest {
+public class RecordingRequest {
     private String room_id;
 
-    public StartRecordingRequest(String roomId) {
+    public RecordingRequest(String roomId) {
         this.room_id = roomId;
     }
 
