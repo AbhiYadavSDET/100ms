@@ -15,25 +15,9 @@ public class BaseTest {
         // Initialize ExtentReports before any tests run
         ExtentReporter.getReporter();
     }
-    @BeforeClass
-    public void setup() {
-        // Set the base URI for RestAssured
-        RestAssured.baseURI = ConfigManager.get("base.url");
-
-        // Optionally, set default headers if needed
-        RestAssured.given()
-                .header("Authorization", getAuthToken())
-                .header("Content-Type", "application/json");
-    }
-
     @AfterSuite
     public void tearDown() {
         // Flush Extent report after tests are complete
         ExtentReporter.flush();
     }
-
-    protected String getAuthToken() {
-        return ConfigManager.get("management.token");
-
-}
 }
