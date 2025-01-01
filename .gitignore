@@ -1,0 +1,9 @@
+*.class            # Ignore compiled class files
+*.jar              # Ignore JAR files
+*.war              # Ignore WAR files
+*.ear              # Ignore EAR files
+.idea/                # Ignore IntelliJ project files
+*.iml                 # Ignore IntelliJ module files
+.gradle/               # Ignore Gradle wrapper and dependencies
+build/                 # Ignore Gradle build output
+.mvn/                  # Ignore Maven wrapper files

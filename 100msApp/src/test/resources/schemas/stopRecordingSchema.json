@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "limit": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "room_id": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stopped_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "meeting_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "started_by": {
+            "type": "string"
+          },
+          "stopped_by": {
+            "type": "string"
+          },
+          "playback": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": ["url"]
+          },
+          "recording": {
+            "type": "object",
+            "properties": {
+              "hls_vod": {
+                "type": "boolean"
+              },
+              "single_file_per_layer": {
+                "type": "boolean"
+              }
+            },
+            "required": ["hls_vod", "single_file_per_layer"]
+          },
+          "recording_assets": {
+            "type": ["null", "object"]
+          },
+          "destination": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "room_id",
+          "session_id",
+          "status",
+          "created_at",
+          "started_at",
+          "updated_at",
+          "stopped_at",
+          "meeting_url",
+          "started_by",
+          "stopped_by",
+          "playback",
+          "recording",
+          "recording_assets",
+          "destination"
+        ]
+      }
+    },
+    "last": {
+      "type": "string"
+    }
+  },
+  "required": ["limit", "data", "last"]
+}
