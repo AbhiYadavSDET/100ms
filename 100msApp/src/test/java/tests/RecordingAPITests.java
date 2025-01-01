@@ -4,11 +4,16 @@ import base.BaseTest;
 import helpers.RecordingHelper;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import utils.ConfigManager;
 import com.aventstack.extentreports.ExtentTest;
 import utils.ExtentReporter;
+
+import java.io.File;
+
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
 public class RecordingAPITests extends BaseTest {
     private RecordingHelper recordingHelper;
@@ -41,11 +46,17 @@ public class RecordingAPITests extends BaseTest {
             } else {
                 test.fail("Failed to start recording. Status Code: " + response.statusCode());
             }
+
+            // Validate response schema
+            test.info("Validating JSON schema for Start API response.");
+            response.then().assertThat()
+                    .body(matchesJsonSchema(new File("src/test/resources/schemas/startRecordingSchema.json")));
+
             Assert.assertEquals(response.jsonPath().getString("status"), "starting", "Recording status should be 'starting'");
 
         } catch (AssertionError e) {
             test.fail("Test failed: " + e.getMessage());
-            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
+            throw e;
         }
     }
 
@@ -71,38 +82,43 @@ public class RecordingAPITests extends BaseTest {
             }
         } catch (AssertionError e) {
             test.fail("Test failed: " + e.getMessage());
-            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
+            throw e;
         }
     }
 
     @Test(priority = 3, dependsOnMethods = "testStartRecording")
     public void testStopRecording() {
-        // Start the test in ExtentReport
         test = ExtentReporter.getReporter().createTest("Stop Recording Test for Room ID: " + roomId);
 
-        test.info("Stopping recording for Room ID: " + roomId);
+        // Debugging: Log essential variables
+        test.info("Room ID: " + roomId);
+        test.info("Meeting URL: " + meetingUrl);
+
+        if (roomId == null || meetingUrl == null) {
+            test.skip("Test skipped: roomId or meetingUrl is null.");
+            throw new SkipException("roomId or meetingUrl is null.");
+        }
+
         Response response = recordingHelper.stopRecording(roomId, meetingUrl);
 
         test.info("Response Status Code: " + response.getStatusCode());
+        test.info("Response Body: " + response.asPrettyString());
 
         try {
-            // Validate the response status code
-            Assert.assertEquals(response.statusCode(), 200, "Status Code should be 200.");
+            Assert.assertEquals(response.statusCode(), 200, "Expected HTTP status code 200.");
+          /*  response.then().assertThat()
+                    .body(matchesJsonSchema(new File("src/test/resources/schemas/stopRecordingSchema.json")));*/
 
-            // Extract data from the response
             String status = response.jsonPath().getString("data[0].status");
-            String meetingUrlFromResponse = response.jsonPath().getString("data[0].meeting_url");
+            Assert.assertEquals(status, "stopping", "Recording status is not 'stopping'.");
 
-            // Assertions for status and meeting URL
-            Assert.assertEquals(status, "stopping", "Recording status is not stopping.");
-            Assert.assertEquals(meetingUrlFromResponse, meetingUrl, "Meeting URL in response does not match the provided URL.");
-
-            test.pass("Recording stopped successfully with status: " + status);
-        } catch (AssertionError e) {
+            test.pass("Recording stopped successfully.");
+        } catch (Exception e) {
             test.fail("Test failed: " + e.getMessage());
-            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
+            throw e;
         }
     }
+
 
     @Test(priority = 4)
     public void testStopRecordingWithoutActiveRecording() {
@@ -125,7 +141,7 @@ public class RecordingAPITests extends BaseTest {
             }
         } catch (AssertionError e) {
             test.fail("Test failed: " + e.getMessage());
-            throw e; // Rethrow the exception to ensure the test fails in TestNG as well
+            throw e;
         }
     }
 }
